@@ -28,6 +28,7 @@ library(glue)
 
 
 
+
 jobs <-
   read_xlsx(here::here("data", "resume.xlsx"), sheet = "jobs") %>%
   # fill(Start, End, What, With, Where, Tag) %>%
