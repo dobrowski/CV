@@ -1,5 +1,5 @@
 ---
-name: David
+name: David 
 surname: Dobrowski
 qualifications: BCom(Hons), BSc
 position: "Director of Data, Research and Partnerships"
@@ -21,23 +21,31 @@ output:
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(vitae)
 library(tidyverse)
+library(readxl)
+library(lubridate)
+library(glue)
 # output types  AwesomeCV  moderncv  
 
 
 
-# jobs <- read_csv(here::here("data", "jobs.csv")) %>%
-#   fill(Start, End, What, With, Where, Tag) %>%  
-#   mutate(Start = mdy(Start),
-#          End = mdy(End)) %>% 
-#   mutate(When = case_when(
-#     is.na(End) ~ glue("{year(Start)}--Present") %>% as.character(),
-#     year(Start) == year(End) ~ year(End) %>% as.character(),
-#     TRUE ~ glue("{year(Start)}--{year(End)}") %>% as.character()
-#   ))
-# 
-# funding <- read_delim(here::here("data", "funding.txt"), delim = "\t")
-# 
-# education <- read_delim(here::here("data", "education.txt"), delim = "\t") %>%
+jobs <-
+  read_xlsx(here::here("data", "resume.xlsx"), sheet = "jobs") %>%
+  # fill(Start, End, What, With, Where, Tag) %>%
+  mutate(Start = ymd(start_date),
+         End = ymd(end_date)) %>%
+  mutate(
+    years = case_when(
+      is.na(End) ~ glue("{year(Start)}--Present") %>% as.character(),
+      year(Start) == year(End) ~ year(End) %>% as.character(),
+      TRUE ~ glue("{year(Start)}--{year(End)}") %>% as.character()
+    )
+  )
+
+
+
+
+ education <-   read_xlsx(here::here("data", "resume.xlsx"), sheet = "education") # %>%
+
 #   fill(Start, End, What, With, Where, Tag) %>%  
 #   mutate(Start = mdy(Start),
 #          End = mdy(End)) %>% 
@@ -58,29 +66,6 @@ library(tidyverse)
  * I was the first woman to win a Nobel prize
  * I was the first person and only woman to win a Nobel prize in two different sciences.
 
-# Education
-
-```{r}
-library(tibble)
-tribble(
-  ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "Informal studies", "1889-91", "Flying University", "Warsaw, Poland",
-  "Master of Physics", "1893", "Sorbonne Université", "Paris, France",
-  "Master of Mathematics", "1894", "Sorbonne Université", "Paris, France"
-) %>% 
-  detailed_entries(Degree, Year, Institution, Where)
-
-# education %>% 
-#   arrange(desc(Start)) %>% 
-#   detailed_entries(
-#     what = What,
-#     when = When,
-#     with = With,
-#     where = Where,
-#     why = Why
-#   )
-
-```
 
 # Employment
 
@@ -90,26 +75,45 @@ My teaching quality at Monash University has been consistently recognised with p
 }
 
 ```{r jobs}
-tribble(
-  ~Year, ~Type, ~Desc,
-  1903, "Physics", "Awarded for her work on radioactivity with Pierre Curie and Henri Becquerel",
-  1911, "Chemistry", "Awarded for the discovery of radium and polonium"
-) %>% 
-  detailed_entries(
-    glue::glue("Nobel Prize in {Type}"),
-    Year, 
-    Desc
-  )
-
-# jobs %>% 
-#   arrange(desc(Start)) %>% 
+# tribble(
+#   ~Year, ~Type, ~Desc,
+#   1903, "Physics", "Awarded for her work on radioactivity with Pierre Curie and Henri Becquerel",
+#   1911, "Chemistry", "Awarded for the discovery of radium and polonium"
+# ) %>% 
 #   detailed_entries(
-#     what = What,
-#     when = When,
-#     with = With,
-#     where = Where,
-#     why = Why
-#   ) %>% 
+#     glue::glue("Nobel Prize in {Type}"),
+#     Year, 
+#     Desc
+#   )
+
+jobs %>% 
+  nest(escript = starts_with("desc"))%>%
+  arrange(desc(start_date)) %>%
+  detailed_entries(
+    what = position,
+    when = years,
+    with = organization,
+    where = location,
+#    why = escript
+    )
+
+
+
+
+# jobs %>%
+#    unite("descrip", desc1:desc14, na.rm = TRUE, sep = "\n") %>%
+#   arrange(desc(start_date)) %>%
+#   detailed_entries(
+#     what = position,
+#     when = years,
+#     with = organization,
+#     where = location,
+#     why = 
+#   )
+
+
+
+# %>% 
 #  detailed_entries(role, dates, company, loc, details)   # "Intern, Pricing and Promotion Analytics", "Kellogg's", "Battle Creek, MI", "May 2011 - Mar 2012", "Contributed to Kellogg's marketing and sales strategies, including optimal feature price, display partners and expected promotion lift."
 
 ```
@@ -134,18 +138,47 @@ tribble(
   )
 ```
 
+
+# Education
+
+```{r}
+library(tibble)
+
+
+# tribble(
+#   ~ Degree, ~ Year, ~ Institution, ~ Where,
+#   "Informal studies", "1889-91", "Flying University", "Warsaw, Poland",
+#   "Master of Physics", "1893", "Sorbonne Université", "Paris, France",
+#   "Master of Mathematics", "1894", "Sorbonne Université", "Paris, France"
+# ) %>% 
+#   detailed_entries(Degree, Year, Institution, Where)
+
+education %>%
+  arrange(desc(date)) %>%
+  detailed_entries(
+    what = degree,
+    when = date,
+    where = school,
+    with = glue("{city}, {state}"),
+    why = details
+  )
+
+```
+
+
+
 # Publications
 
 ```{r}
-scholar::get_publications("EmD_lTEAAAAJ&EmD_lTEAAAAJ&") %>% 
-  filter(cites > 30) %>% 
-  distinct(title, .keep_all = TRUE) %>%
-  transmute(bibtype = "Article", author = as.character(author),
-            title = as.character(title),
-            journaltitle = as.character(journal), year, key = row_number()) %>% 
-  RefManageR::as.BibEntry() %>% 
-  RefManageR::WriteBib("curie.bib")
-
-bibliography_entries("curie.bib")
+# scholar::get_publications("EmD_lTEAAAAJ&EmD_lTEAAAAJ&") %>% 
+#   filter(cites > 30) %>% 
+#   distinct(title, .keep_all = TRUE) %>%
+#   transmute(bibtype = "Article", author = as.character(author),
+#             title = as.character(title),
+#             journaltitle = as.character(journal), year, key = row_number()) %>% 
+#   RefManageR::as.BibEntry() %>% 
+#   RefManageR::WriteBib("curie.bib")
+# 
+# bibliography_entries("curie.bib")
 ```
 
