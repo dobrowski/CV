@@ -61,19 +61,19 @@ jobs <-
 
 ```
 
-# Some stuff about me
+# Skills
 
- * I poisoned myself doing research.
- * I was the first woman to win a Nobel prize
- * I was the first person and only woman to win a Nobel prize in two different sciences.
+ * Advanced use of R
+ * Group facilitation and training 
+ * Project Management
 
 
 # Employment
 
 
-\footnotesize{
-My teaching quality at Monash University has been consistently recognised with positive student evaluations and individual praise from my students. I have also been awarded four congratulatory letters for outstanding student evaluations for three of my units (ETF5231, ETC3580, ETC3550), which indicates that student feedback for the unit is among the best in the university.
-}
+\footnotesize
+I have been consistently recognized as a valueable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations.
+
 
 ```{r jobs}
 # tribble(
@@ -88,14 +88,15 @@ My teaching quality at Monash University has been consistently recognised with p
 #   )
 
 jobs %>% 
-  nest(escript = starts_with("desc"))%>%
+  mutate(escript = pmap(list(desc1, desc2), c) ) %>%  #  need to figure out how to add all the descriptions to a list-column for why
+  
   arrange(desc(start_date)) %>%
   detailed_entries(
     what = position,
     when = years,
     with = organization,
     where = location,
-#    why = escript
+    why = escript
     )
 
 
