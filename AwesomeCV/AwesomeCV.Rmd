@@ -15,6 +15,13 @@ date: "`r format(Sys.time(), '%B %Y')`"
 output: 
   vitae::awesomecv:
     keep_tex: true
+knit: (function(inputFile, encoding) { 
+    rmarkdown::render( 
+      input       = inputFile, 
+      encoding    = encoding, 
+      output_file = "Dobrowski Resume") })
+
+
 ---
 
 ```{r setup, include=FALSE}
@@ -70,7 +77,7 @@ honors <- read_xlsx(here::here("data", "resume.xlsx"), sheet = "honors")
 
 
 ```
-I have been consistently recognized as a valuable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations. Translate complex data to somethiing people can understand.
+I have been consistently recognized as a valuable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations. I translate complex data in to forms and ideas that people can understand and use to take action.
 
 # Skills
 
