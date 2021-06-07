@@ -40,10 +40,12 @@ jobs <-
       year(Start) == year(End) ~ year(End) %>% as.character(),
       TRUE ~ glue("{year(Start)}--{year(End)}") %>% as.character()
     )
-  )
+  ) %>%  # Put additional details in with different number of details per job
+  mutate(escript = pmap(list(desc1, desc2, desc3, desc4, desc5, desc6, desc7, desc8, desc9, desc10, desc11, desc12, desc13, desc14), c) ,
+         escript2 = purrr::map(escript, ~purrr::discard(.x, .p = is.na)))
 
 
-
+consulting <- read_xlsx(here::here("data", "resume.xlsx"), sheet = "consulting")
 
  education <-   read_xlsx(here::here("data", "resume.xlsx"), sheet = "education") # %>%
 
@@ -72,71 +74,34 @@ jobs <-
 
 
 \footnotesize
-I have been consistently recognized as a valueable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations.
+I have been consistently recognized as a valuable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations.
 
 
 ```{r jobs}
-# tribble(
-#   ~Year, ~Type, ~Desc,
-#   1903, "Physics", "Awarded for her work on radioactivity with Pierre Curie and Henri Becquerel",
-#   1911, "Chemistry", "Awarded for the discovery of radium and polonium"
-# ) %>% 
-#   detailed_entries(
-#     glue::glue("Nobel Prize in {Type}"),
-#     Year, 
-#     Desc
-#   )
 
-jobs %>% 
-  mutate(escript = pmap(list(desc1, desc2), c) ) %>%  #  need to figure out how to add all the descriptions to a list-column for why
-  
+jobs  %>%
   arrange(desc(start_date)) %>%
   detailed_entries(
     what = position,
     when = years,
     with = organization,
     where = location,
-    why = escript
+    why = escript2
     )
-
-
-
-
-# jobs %>%
-#    unite("descrip", desc1:desc14, na.rm = TRUE, sep = "\n") %>%
-#   arrange(desc(start_date)) %>%
-#   detailed_entries(
-#     what = position,
-#     when = years,
-#     with = organization,
-#     where = location,
-#     why = 
-#   )
-
-
-
-# %>% 
-#  detailed_entries(role, dates, company, loc, details)   # "Intern, Pricing and Promotion Analytics", "Kellogg's", "Battle Creek, MI", "May 2011 - Mar 2012", "Contributed to Kellogg's marketing and sales strategies, including optimal feature price, display partners and expected promotion lift."
 
 ```
 
 # Independent Consulting
 
 
-\footnotesize{
-My teaching quality at Monash University has been consistently recognised with positive student evaluations and individual praise from my students. I have also been awarded four congratulatory letters for outstanding student evaluations for three of my units (ETF5231, ETC3580, ETC3550), which indicates that student feedback for the unit is among the best in the university.
-}
+\footnotesize
+I have maintained my own independent evaluation consulting practice since 2007.  My clients are non-profits, foundations and government entities. 
 
-```{r}
-tribble(
-  ~Year, ~Type, ~Desc,
-  1903, "Physics", "Awarded for her work on radioactivity with Pierre Curie and Henri Becquerel",
-  1911, "Chemistry", "Awarded for the discovery of radium and polonium"
-) %>% 
+```{r consulting}
+
+consulting %>%
   brief_entries(
-    glue::glue("Nobel Prize in {Type}"),
-    Year, 
-    Desc
+what = Clients
   )
 ```
 
@@ -146,14 +111,6 @@ tribble(
 ```{r}
 library(tibble)
 
-
-# tribble(
-#   ~ Degree, ~ Year, ~ Institution, ~ Where,
-#   "Informal studies", "1889-91", "Flying University", "Warsaw, Poland",
-#   "Master of Physics", "1893", "Sorbonne Université", "Paris, France",
-#   "Master of Mathematics", "1894", "Sorbonne Université", "Paris, France"
-# ) %>% 
-#   detailed_entries(Degree, Year, Institution, Where)
 
 education %>%
   arrange(desc(date)) %>%
