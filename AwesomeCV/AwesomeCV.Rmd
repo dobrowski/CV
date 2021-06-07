@@ -47,6 +47,14 @@ jobs <-
 
 consulting <- read_xlsx(here::here("data", "resume.xlsx"), sheet = "consulting")
 
+
+conference <- read_xlsx(here::here("data", "resume.xlsx"), sheet = "conference")
+
+
+
+honors <- read_xlsx(here::here("data", "resume.xlsx"), sheet = "honors")
+
+
  education <-   read_xlsx(here::here("data", "resume.xlsx"), sheet = "education") # %>%
 
 #   fill(Start, End, What, With, Where, Tag) %>%  
@@ -125,8 +133,39 @@ education %>%
 ```
 
 
+# Conference Presentations
+\footnotesize
+I have maintained my own independent evaluation consulting practice since 2007.  My clients are non-profits, foundations and government entities. 
 
-# Publications
+```{r conference}
+
+conference %>%
+  brief_entries(
+what = title,
+with = place,
+when = date
+  )
+```
+
+
+
+# Honors and Awards 
+\footnotesize
+The following are select honors and awards I have received over my career.  
+
+```{r honors}
+
+honors %>%
+  brief_entries(
+what = honors,
+with = place,
+when = date
+  )
+```
+
+
+
+
 
 ```{r}
 # scholar::get_publications("EmD_lTEAAAAJ&EmD_lTEAAAAJ&") %>% 
