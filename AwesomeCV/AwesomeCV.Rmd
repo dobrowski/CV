@@ -70,19 +70,26 @@ honors <- read_xlsx(here::here("data", "resume.xlsx"), sheet = "honors")
 
 
 ```
+I have been consistently recognized as a valuable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations. Translate complex data to somethiing people can understand.
 
 # Skills
 
- * Advanced use of R
- * Group facilitation and training 
- * Project Management
+\begin{minipage}[t]{0.5\textwidth}
+ * Advanced use of R \\
+ * Evaluation \\
+ * Group facilitation and training \\
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+ * Project Management \\
+ * Spanish \\
+\end{minipage}
 
 
-# Employment
+# Relevant Employment
 
 
 \footnotesize
-I have been consistently recognized as a valuable collaborator through the development and use of data, evaluation and learning. My work bridges the technical with the application in public service and community based organizations.
+
 
 
 ```{r jobs}
@@ -133,9 +140,8 @@ education %>%
 ```
 
 
-# Conference Presentations
+# Select Conference Presentations
 \footnotesize
-I have maintained my own independent evaluation consulting practice since 2007.  My clients are non-profits, foundations and government entities. 
 
 ```{r conference}
 
