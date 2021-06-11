@@ -31,6 +31,8 @@ library(tidyverse)
 library(readxl)
 library(lubridate)
 library(glue)
+library(fontawesome) # https://github.com/loreabad6/R-CV/blob/master/CV.Rmd
+library(emojifont)
 # output types  AwesomeCV  moderncv  
 
 
@@ -129,6 +131,7 @@ what = Clients
 
 
 # Education
+
 
 ```{r}
 library(tibble)
